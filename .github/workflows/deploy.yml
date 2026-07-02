@@ -34,6 +34,8 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+        env:
+          BUN_CONFIG_MINIMUM_RELEASE_AGE: 0
 
       - name: Build static site
         run: bun run build:static
