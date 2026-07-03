@@ -57,15 +57,14 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-hairline bg-white/10 backdrop-blur-sm">
-        <div className="container-page py-10">
-          <div className="flex flex-wrap items-center justify-center gap-12 md:justify-between">
-            <img src={`${import.meta.env.BASE_URL}nhs.png`} alt="NHS logo" className="h-16 w-auto object-contain opacity-80" />
-            <img src={`${import.meta.env.BASE_URL}barts.png`} alt="Barts Health logo" className="h-20 w-auto object-contain opacity-80" />
-            <img src={`${import.meta.env.BASE_URL}innovateuk.png`} alt="Innovate UK logo" className="h-16 w-auto object-contain opacity-80" />
-            <img src={`${import.meta.env.BASE_URL}cruk.png`} alt="Cancer Research UK logo" className="h-20 w-auto object-contain opacity-80" />
-          </div>
+      <section className="border-y border-hairline">        <div className="container-page py-10">
+        <div className="flex flex-wrap items-center justify-center gap-12 md:justify-between">
+          <img src={`${import.meta.env.BASE_URL}nhs.png`} alt="NHS logo" className="h-16 w-auto object-contain opacity-80" />
+          <img src={`${import.meta.env.BASE_URL}barts.png`} alt="Barts Health logo" className="h-20 w-auto object-contain opacity-80" />
+          <img src={`${import.meta.env.BASE_URL}innovateuk.png`} alt="Innovate UK logo" className="h-16 w-auto object-contain opacity-80" />
+          <img src={`${import.meta.env.BASE_URL}cruk.png`} alt="Cancer Research UK logo" className="h-20 w-auto object-contain opacity-80" />
         </div>
+      </div>
       </section>
 
       {/* Problem */}
