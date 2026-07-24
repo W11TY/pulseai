@@ -22,6 +22,7 @@ import {
   MessageSquare
 } from "lucide-react";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface VitalData {
   time: string;
@@ -216,7 +217,6 @@ export function PulseDashboardDemo() {
   useEffect(() => {
     if (!isPlaying) return;
     const interval = setInterval(() => {
-      // Simulate live vital updates slightly
       setSelectedPatient((prev) => {
         const lastVitals = [...prev.vitals];
         const lastIndex = lastVitals.length - 1;
@@ -256,81 +256,88 @@ export function PulseDashboardDemo() {
   };
 
   const getRiskColor = (status: Patient["status"]) => {
-    if (status === "high") return "text-red-500 border-red-500 bg-red-500/10";
-    if (status === "medium") return "text-amber-500 border-amber-500 bg-amber-500/10";
-    return "text-green-500 border-green-500 bg-green-500/10";
+    if (status === "high") return "text-red-400 border-red-500/30 bg-red-500/10 shadow-[0_0_10px_rgba(248,113,113,0.1)]";
+    if (status === "medium") return "text-amber-400 border-amber-500/30 bg-amber-500/10 shadow-[0_0_10px_rgba(251,191,36,0.1)]";
+    return "text-emerald-400 border-emerald-500/30 bg-emerald-500/10 shadow-[0_0_10px_rgba(52,211,153,0.1)]";
   };
 
   const getRiskBg = (status: Patient["status"]) => {
-    if (status === "high") return "bg-red-500";
-    if (status === "medium") return "bg-amber-500";
-    return "bg-green-500";
+    if (status === "high") return "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]";
+    if (status === "medium") return "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]";
+    return "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]";
   };
 
+  const tabs = [
+    { id: "vitals", label: "Live Vitals", icon: Activity },
+    { id: "agents", label: "AI Reasonings", icon: MessageSquare },
+    { id: "sbar", label: "Handover (SBAR)", icon: FileText }
+  ] as const;
+
   return (
-    <div className="card-elevated overflow-hidden bg-bg-panel border-hairline transition-all duration-300">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-slate-950 text-slate-300 font-sans selection:bg-[#9ada00]/30 selection:text-white">
       {/* Simulation Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-hairline bg-bg-panel-raised px-4 py-3">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-slate-900/50 backdrop-blur-md px-6 py-4">
+        <div className="flex items-center gap-3">
           <div className="relative flex h-3 w-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-pulse opacity-75"></span>
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-accent-pulse"></span>
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#9ada00] opacity-75"></span>
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-[#9ada00]"></span>
           </div>
-          <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
+          <span className="font-mono text-xs uppercase tracking-[0.2em] text-slate-400 font-semibold">
             Live Clinical AI Simulation
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] text-text-muted bg-bg-base border border-hairline px-2 py-0.5 rounded">
-            {simulatedTime}
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-[11px] text-slate-400 bg-slate-900 border border-white/10 px-3 py-1 rounded-md shadow-inner">
+            SYS TIME: {simulatedTime}
           </span>
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="text-[10px] text-accent-pulse font-mono bg-bg-base border border-hairline px-2 py-0.5 rounded"
+            className="text-[11px] text-[#9ada00] font-mono bg-slate-900 border border-[#9ada00]/30 hover:bg-[#9ada00]/10 hover:border-[#9ada00]/60 transition-all px-3 py-1 rounded-md shadow-[0_0_10px_rgba(154,218,0,0.1)]"
           >
-            {isPlaying ? "Pause" : "Resume"}
+            {isPlaying ? "PAUSE_SIM" : "RESUME_SIM"}
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col md:grid md:grid-cols-3">
+      <div className="flex flex-col md:grid md:grid-cols-[320px_1fr] flex-1 overflow-hidden">
         {/* Left Side: Patient selector */}
-        <div className="border-b md:border-b-0 md:border-r border-hairline bg-bg-base p-4">
-          <h3 className="mb-4 font-mono text-xs uppercase tracking-wider text-text-muted">
-            Active Ward / Outpatients
+        <div className="border-b md:border-b-0 md:border-r border-white/10 bg-slate-900/30 p-5 overflow-y-auto custom-scrollbar">
+          <h3 className="mb-5 font-mono text-xs uppercase tracking-widest text-slate-500 font-semibold">
+            Active Ward List
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {mockPatients.map((p) => {
               const isSelected = selectedPatient.id === p.id;
               return (
                 <button
                   key={p.id}
                   onClick={() => handlePatientSelect(p)}
-                  className={`w-full text-left p-3.5 rounded-lg border transition-all ${
+                  className={`w-full text-left p-4 rounded-xl border transition-all duration-300 relative overflow-hidden group ${
                     isSelected
-                      ? "border-accent-pulse bg-bg-panel-raised shadow-sm"
-                      : "border-hairline hover:bg-bg-panel hover:border-text-muted/30"
+                      ? "border-[#9ada00]/50 bg-slate-800/80 shadow-[0_0_20px_rgba(154,218,0,0.05)]"
+                      : "border-white/5 hover:bg-slate-800/40 hover:border-white/20"
                   }`}
                 >
-                  <div className="flex items-start justify-between">
+                  {isSelected && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#9ada00]/10 to-transparent opacity-50" />
+                  )}
+                  
+                  <div className="relative z-10 flex items-start justify-between">
                     <div>
-                      <h4 className="text-sm font-semibold text-text-primary">{p.name}</h4>
-                      <p className="text-xs text-text-muted mt-0.5">{p.condition}</p>
+                      <h4 className={`text-sm font-semibold transition-colors ${isSelected ? "text-white" : "text-slate-200 group-hover:text-white"}`}>{p.name}</h4>
+                      <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">{p.condition}</p>
                     </div>
+                  </div>
+                  <div className="relative z-10 mt-4 flex items-center justify-between text-xs text-slate-400">
                     <span
-                      className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono border ${getRiskColor(
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono border ${getRiskColor(
                         p.status
                       )}`}
                     >
-                      {p.risk}% Risk
+                      {p.risk}% RISK
                     </span>
-                  </div>
-                  <div className="mt-3 flex items-center justify-between text-xs text-text-muted">
-                    <span className="flex items-center gap-1 font-mono">
-                      <Clock size={12} /> Age {p.age}
-                    </span>
-                    <span className="flex items-center gap-1 font-mono">
-                      <Activity size={12} /> HR: {p.vitals[p.vitals.length - 1].heartRate} bpm
+                    <span className="flex items-center gap-1.5 font-mono text-[11px]">
+                      <Activity size={12} className={isSelected ? "text-[#9ada00] animate-pulse" : ""} /> HR: {p.vitals[p.vitals.length - 1].heartRate}
                     </span>
                   </div>
                 </button>
@@ -338,279 +345,307 @@ export function PulseDashboardDemo() {
             })}
           </div>
 
-          <div className="mt-6 border-t border-hairline pt-4 text-xs text-text-muted leading-relaxed">
-            <span className="font-semibold text-text-primary block mb-1">Clinical Context</span>
-            Pulse AI constantly reads patient history and live streams to find risk patterns that standard alerts miss. Select patients above to audit the AI's logic.
+          <div className="mt-8 border-t border-white/10 pt-5 text-[11px] text-slate-500 leading-relaxed font-mono">
+            <span className="font-semibold text-slate-400 block mb-2 tracking-wider">SYSTEM_LOG</span>
+            Pulse AI reads multimodal history & live telemetry to predict deterioration up to 15 hours before crisis. Select patient to audit reasoning.
           </div>
         </div>
 
         {/* Right Side: Core interactive panel */}
-        <div className="col-span-2 flex flex-col bg-bg-panel">
+        <div className="flex flex-col bg-slate-950 overflow-hidden relative">
+          
+          {/* Subtle background glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-2xl bg-[#9ada00]/5 blur-[120px] rounded-full pointer-events-none opacity-50" />
+
           {/* Patient Panel Info Header */}
-          <div className="border-b border-hairline bg-bg-base p-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="border-b border-white/10 bg-slate-900/50 p-6 sm:p-8 relative z-10">
+            <div className="flex flex-wrap items-start justify-between gap-6">
               <div>
-                <span className="font-mono text-xs uppercase tracking-wider text-accent-pulse">
+                <span className="font-mono text-[11px] uppercase tracking-widest text-[#9ada00] mb-2 block">
                   {selectedPatient.condition}
                 </span>
-                <h2 className="text-xl font-bold text-text-primary mt-1">
-                  {selectedPatient.name}, {selectedPatient.age} years old
+                <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                  {selectedPatient.name} <span className="text-slate-500 font-normal ml-2">/ {selectedPatient.age}y</span>
                 </h2>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4 bg-slate-900/80 border border-white/10 p-3 rounded-2xl shadow-xl">
                 <div className="text-right">
-                  <span className="block text-[10px] font-mono text-text-muted uppercase">
-                    Risk Assessment
+                  <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-1">
+                    AI Assessment
                   </span>
-                  <span className="text-sm font-bold text-text-primary">
+                  <span className="text-sm font-semibold text-white">
                     {selectedPatient.status === "high" ? "Critical Review" : selectedPatient.status === "medium" ? "Elevated Watch" : "Standard Monitoring"}
                   </span>
                 </div>
-                <div className={`flex h-12 w-12 items-center justify-center rounded-full text-white font-mono font-bold text-lg ${getRiskBg(selectedPatient.status)}`}>
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl text-slate-950 font-mono font-bold text-lg ${getRiskBg(selectedPatient.status)}`}>
                   {selectedPatient.risk}%
                 </div>
               </div>
             </div>
 
-            {/* Action/Tab buttons */}
-            <div className="flex flex-wrap gap-2 mt-4 border-t border-hairline pt-4">
-              <button
-                onClick={() => setActiveTab("vitals")}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                  activeTab === "vitals"
-                    ? "bg-text-primary text-background border-text-primary"
-                    : "bg-bg-base border-hairline text-text-primary hover:bg-bg-panel"
-                }`}
-              >
-                <Activity size={14} />
-                Live Vitals Chart
-              </button>
-              <button
-                onClick={() => setActiveTab("agents")}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                  activeTab === "agents"
-                    ? "bg-text-primary text-background border-text-primary"
-                    : "bg-bg-base border-hairline text-text-primary hover:bg-bg-panel"
-                }`}
-              >
-                <MessageSquare size={14} />
-                Clinical Agent Reasonings
-              </button>
-              <button
-                onClick={() => setActiveTab("sbar")}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                  activeTab === "sbar"
-                    ? "bg-text-primary text-background border-text-primary"
-                    : "bg-bg-base border-hairline text-text-primary hover:bg-bg-panel"
-                }`}
-              >
-                <FileText size={14} />
-                AI Handover Report (SBAR)
-              </button>
+            {/* Action/Tab buttons with Framer Motion */}
+            <div className="flex flex-wrap gap-2 mt-8">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold transition-colors z-10 ${
+                      isActive ? "text-slate-950" : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeTabIndicator"
+                        className="absolute inset-0 bg-[#9ada00] rounded-full shadow-[0_0_15px_rgba(154,218,0,0.4)]"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                    <span className="relative z-10 flex items-center gap-2">
+                      <Icon size={14} className={isActive ? "text-slate-950" : ""} />
+                      {tab.label}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           </div>
 
           {/* Tab Contents */}
-          <div className="flex-1 p-6 flex flex-col justify-between">
-            {activeTab === "vitals" && (
-              <div className="flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2 mb-4">
-                    <Activity size={16} className="text-accent-pulse animate-pulse" />
-                    Patient Vital Sign Stream & Predicted Risk Curve
-                  </h3>
-                  <div className="h-48 md:h-64 w-full bg-bg-base border border-hairline rounded-xl p-2 md:p-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={selectedPatient.vitals}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--hairline)" />
-                        <XAxis dataKey="time" stroke="var(--text-muted)" fontSize={11} tickLine={false} />
-                        <YAxis yAxisId="left" stroke="#1F8A5C" fontSize={11} tickLine={false} domain={[50, 140]} />
-                        <YAxis yAxisId="right" orientation="right" stroke="var(--text-muted)" fontSize={11} tickLine={false} domain={[0, 100]} />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "var(--bg-panel)",
-                            borderColor: "var(--hairline)",
-                            borderRadius: "8px",
-                            fontSize: "12px",
-                            color: "var(--text-primary)"
-                          }}
-                        />
-                        <ReferenceLine yAxisId="left" y={100} stroke="#f43f5e" strokeDasharray="3 3" label={{ value: 'Tachycardia Threshold', fill: '#f43f5e', fontSize: 9 }} />
-                        <Line
-                          yAxisId="left"
-                          type="monotone"
-                          dataKey="heartRate"
-                          name="Heart Rate (bpm)"
-                          stroke="#1F8A5C"
-                          strokeWidth={2}
-                          activeDot={{ r: 6 }}
-                        />
-                        <Line
-                          yAxisId="left"
-                          type="monotone"
-                          dataKey="spo2"
-                          name="Oxygen SpO2 (%)"
-                          stroke="#3b82f6"
-                          strokeWidth={2}
-                          activeDot={{ r: 6 }}
-                        />
-                        <Line
-                          yAxisId="right"
-                          type="monotone"
-                          dataKey="riskScore"
-                          name="AI Deterioration Risk (%)"
-                          stroke="#f43f5e"
-                          strokeWidth={2}
-                          strokeDasharray="5 5"
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+          <div className="flex-1 p-6 sm:p-8 overflow-y-auto relative z-10 custom-scrollbar">
+            <AnimatePresence mode="wait">
+              {activeTab === "vitals" && (
+                <motion.div 
+                  key="vitals"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-col h-full gap-6"
+                >
+                  <div className="flex-1 min-h-[300px] flex flex-col">
+                    <h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-4">
+                      <Activity size={16} className="text-[#9ada00]" />
+                      Live Telemetry & Predictive Risk Curve
+                    </h3>
+                    <div className="flex-1 w-full bg-slate-900/60 border border-white/10 rounded-2xl p-4 shadow-xl backdrop-blur-sm">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={selectedPatient.vitals} margin={{ top: 20, right: 10, left: -20, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="colorHr" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                            </linearGradient>
+                            <linearGradient id="colorRisk" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                          <XAxis dataKey="time" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                          <YAxis yAxisId="left" stroke="#10b981" fontSize={11} tickLine={false} axisLine={false} domain={[50, 140]} />
+                          <YAxis yAxisId="right" orientation="right" stroke="#f43f5e" fontSize={11} tickLine={false} axisLine={false} domain={[0, 100]} />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "rgba(15, 23, 42, 0.9)",
+                              borderColor: "rgba(255,255,255,0.1)",
+                              borderRadius: "12px",
+                              boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)",
+                              fontSize: "12px",
+                              color: "#f8fafc",
+                              backdropFilter: "blur(8px)"
+                            }}
+                          />
+                          <ReferenceLine yAxisId="left" y={100} stroke="#f43f5e" strokeDasharray="3 3" strokeOpacity={0.5} label={{ value: 'Tachycardia', fill: '#f43f5e', fontSize: 10, position: 'insideTopLeft' }} />
+                          <Line
+                            yAxisId="left"
+                            type="monotone"
+                            dataKey="heartRate"
+                            name="Heart Rate (bpm)"
+                            stroke="#10b981"
+                            strokeWidth={3}
+                            dot={false}
+                            activeDot={{ r: 6, fill: "#10b981", stroke: "#022c22", strokeWidth: 2 }}
+                            style={{ filter: "drop-shadow(0px 0px 4px rgba(16,185,129,0.5))" }}
+                          />
+                          <Line
+                            yAxisId="right"
+                            type="monotone"
+                            dataKey="riskScore"
+                            name="AI Deterioration Risk (%)"
+                            stroke="#f43f5e"
+                            strokeWidth={2}
+                            strokeDasharray="5 5"
+                            dot={false}
+                            style={{ filter: "drop-shadow(0px 0px 4px rgba(244,63,94,0.5))" }}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
-                </div>
 
-                <div className="mt-4 grid grid-cols-3 gap-2">
-                  <div className="bg-bg-base border border-hairline p-3 rounded-lg">
-                    <span className="text-[10px] font-mono text-text-muted block">CURRENT HEART RATE</span>
-                    <span className="text-lg font-bold text-text-primary mt-1 block">
-                      {selectedPatient.vitals[selectedPatient.vitals.length - 1].heartRate} <span className="text-xs font-normal text-text-muted">bpm</span>
-                    </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="bg-slate-900/60 border border-white/10 p-4 rounded-2xl shadow-lg backdrop-blur-sm relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-3 opacity-20"><Activity size={24} /></div>
+                      <span className="text-[10px] font-mono text-slate-400 block tracking-wider">CURRENT HEART RATE</span>
+                      <span className="text-2xl font-bold text-white mt-2 block">
+                        {selectedPatient.vitals[selectedPatient.vitals.length - 1].heartRate} <span className="text-sm font-normal text-slate-500">bpm</span>
+                      </span>
+                    </div>
+                    <div className="bg-slate-900/60 border border-white/10 p-4 rounded-2xl shadow-lg backdrop-blur-sm relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-3 opacity-20"><Activity size={24} /></div>
+                      <span className="text-[10px] font-mono text-slate-400 block tracking-wider">CURRENT SPO2</span>
+                      <span className="text-2xl font-bold text-white mt-2 block">
+                        {selectedPatient.vitals[selectedPatient.vitals.length - 1].spo2} <span className="text-sm font-normal text-slate-500">%</span>
+                      </span>
+                    </div>
+                    <div className="bg-slate-900/60 border border-white/10 p-4 rounded-2xl shadow-lg backdrop-blur-sm relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-3 opacity-20"><Activity size={24} /></div>
+                      <span className="text-[10px] font-mono text-slate-400 block tracking-wider">DETERIORATION TREND</span>
+                      <span className={`text-xl font-bold mt-2 block ${selectedPatient.status === 'high' ? 'text-red-400' : selectedPatient.status === 'medium' ? 'text-amber-400' : 'text-emerald-400'}`}>
+                        {selectedPatient.status === "high" ? "Upward Spike" : selectedPatient.status === "medium" ? "Slow Rise" : "Flat / Normal"}
+                      </span>
+                    </div>
                   </div>
-                  <div className="bg-bg-base border border-hairline p-3 rounded-lg">
-                    <span className="text-[10px] font-mono text-text-muted block">CURRENT SPO2</span>
-                    <span className="text-lg font-bold text-text-primary mt-1 block">
-                      {selectedPatient.vitals[selectedPatient.vitals.length - 1].spo2} <span className="text-xs font-normal text-text-muted">%</span>
-                    </span>
-                  </div>
-                  <div className="bg-bg-base border border-hairline p-3 rounded-lg">
-                    <span className="text-[10px] font-mono text-text-muted block">DETERIORATION TREND</span>
-                    <span className={`text-lg font-bold mt-1 block ${selectedPatient.status === 'high' ? 'text-red-500' : selectedPatient.status === 'medium' ? 'text-amber-500' : 'text-green-500'}`}>
-                      {selectedPatient.status === "high" ? "Upward Spike" : selectedPatient.status === "medium" ? "Slow Rise" : "Flat / Normal"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
 
-            {activeTab === "agents" && (
-              <div className="flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2 mb-4">
-                    <Sparkles size={16} className="text-accent-pulse" />
+              {activeTab === "agents" && (
+                <motion.div 
+                  key="agents"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex flex-col h-full gap-6"
+                >
+                  <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                    <Sparkles size={16} className="text-[#9ada00]" />
                     Agentic Discussion & Deliberation Log
                   </h3>
-                  <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
-                    {selectedPatient.agents.map((agent) => (
-                      <div
+                  <div className="space-y-4">
+                    {selectedPatient.agents.map((agent, idx) => (
+                      <motion.div
                         key={agent.name}
-                        className="bg-bg-base border border-hairline p-4 rounded-xl shadow-sm animate-fade-in"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1, type: "spring", stiffness: 100 }}
+                        className="bg-slate-900/60 border border-white/10 p-5 rounded-2xl shadow-lg backdrop-blur-sm relative overflow-hidden group"
                       >
-                        <div className="flex items-center gap-2 justify-between">
-                          <div className="flex items-center gap-2">
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-pulse-bright/20 text-accent-pulse text-xs font-bold">
+                        {/* Glow effect on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        
+                        <div className="relative z-10 flex items-center gap-3 justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 border border-white/10 text-[#9ada00] text-sm font-bold shadow-inner">
                               {agent.avatar}
                             </div>
                             <div>
-                              <span className="text-sm font-bold text-text-primary">{agent.name}</span>
-                              <span className="text-[10px] text-text-muted block -mt-0.5">{agent.role}</span>
+                              <span className="text-sm font-bold text-white block mb-0.5">{agent.name}</span>
+                              <span className="text-[10px] text-slate-400 font-mono tracking-wider">{agent.role}</span>
                             </div>
                           </div>
                           <span
-                            className={`inline-flex px-1.5 py-0.5 rounded text-[9px] font-mono border uppercase tracking-wider ${
+                            className={`inline-flex px-2 py-1 rounded text-[10px] font-mono border uppercase tracking-widest font-semibold ${
                               agent.status === "alert"
-                                ? "border-red-500/20 text-red-500 bg-red-500/5"
+                                ? "border-red-500/50 text-red-400 bg-red-500/10 shadow-[0_0_10px_rgba(248,113,113,0.2)]"
                                 : agent.status === "info"
-                                ? "border-blue-500/20 text-blue-500 bg-blue-500/5"
-                                : "border-green-500/20 text-green-500 bg-green-500/5"
+                                ? "border-blue-500/50 text-blue-400 bg-blue-500/10 shadow-[0_0_10px_rgba(96,165,250,0.2)]"
+                                : "border-emerald-500/50 text-emerald-400 bg-emerald-500/10 shadow-[0_0_10px_rgba(52,211,153,0.2)]"
                             }`}
                           >
                             {agent.status}
                           </span>
                         </div>
-                        <p className="mt-2 text-xs text-text-muted leading-relaxed">
+                        <p className="relative z-10 mt-4 text-[13px] text-slate-300 leading-relaxed border-t border-white/5 pt-4">
                           {agent.content}
                         </p>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
 
-            {activeTab === "sbar" && (
-              <div className="flex-1 flex flex-col justify-between">
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2">
-                    <FileText size={16} className="text-accent-pulse" />
-                    SBAR Handover Report Drafted by Synthesis Agent
+              {activeTab === "sbar" && (
+                <motion.div 
+                  key="sbar"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-col h-full gap-6"
+                >
+                  <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                    <FileText size={16} className="text-[#9ada00]" />
+                    SBAR Handover Report
                   </h3>
 
-                  <div className="bg-bg-base border border-hairline rounded-xl p-4 text-xs space-y-3">
+                  <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-6 shadow-xl backdrop-blur-sm space-y-5">
                     <div>
-                      <span className="font-bold text-red-500 block font-mono text-[10px] uppercase">
+                      <span className="font-bold text-red-400 flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest mb-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
                         [S] Situation
                       </span>
-                      <p className="mt-1 text-text-primary">{selectedPatient.sbar.situation}</p>
+                      <p className="text-[13px] text-slate-200 leading-relaxed pl-3 border-l border-white/10">{selectedPatient.sbar.situation}</p>
                     </div>
-                    <div className="border-t border-hairline pt-2">
-                      <span className="font-bold text-text-primary block font-mono text-[10px] uppercase">
+                    <div>
+                      <span className="font-bold text-slate-400 block font-mono text-[11px] uppercase tracking-widest mb-2">
                         [B] Background
                       </span>
-                      <p className="mt-1 text-text-muted">{selectedPatient.sbar.background}</p>
+                      <p className="text-[13px] text-slate-400 leading-relaxed pl-3 border-l border-white/10">{selectedPatient.sbar.background}</p>
                     </div>
-                    <div className="border-t border-hairline pt-2">
-                      <span className="font-bold text-text-primary block font-mono text-[10px] uppercase">
+                    <div>
+                      <span className="font-bold text-slate-400 block font-mono text-[11px] uppercase tracking-widest mb-2">
                         [A] Assessment
                       </span>
-                      <p className="mt-1 text-text-muted">{selectedPatient.sbar.assessment}</p>
+                      <p className="text-[13px] text-slate-400 leading-relaxed pl-3 border-l border-white/10">{selectedPatient.sbar.assessment}</p>
                     </div>
-                    <div className="border-t border-hairline pt-2">
-                      <span className="font-bold text-accent-pulse block font-mono text-[10px] uppercase">
+                    <div>
+                      <span className="font-bold text-[#9ada00] block font-mono text-[11px] uppercase tracking-widest mb-2">
                         [R] Recommendation
                       </span>
-                      <p className="mt-1 text-text-primary font-medium">{selectedPatient.sbar.recommendation}</p>
+                      <p className="text-[13px] text-white font-medium leading-relaxed pl-3 border-l border-[#9ada00]/30">{selectedPatient.sbar.recommendation}</p>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-4 flex items-center justify-end gap-2">
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `SBAR report for ${selectedPatient.name}:\nS: ${selectedPatient.sbar.situation}\nB: ${selectedPatient.sbar.background}\nA: ${selectedPatient.sbar.assessment}\nR: ${selectedPatient.sbar.recommendation}`
-                      );
-                      toast.success("SBAR text copied to clipboard!");
-                    }}
-                    className="h-10 items-center justify-center rounded-full border border-hairline bg-bg-base px-4 text-xs font-medium text-text-primary hover:bg-bg-panel hidden sm:inline-flex"
-                  >
-                    Copy SBAR Text
-                  </button>
-                  <button
-                    onClick={triggerAlert}
-                    disabled={alertSent}
-                    className={`h-10 inline-flex items-center gap-1.5 rounded-full px-5 text-xs font-semibold text-white shadow-sm transition-colors ${
-                      alertSent
-                        ? "bg-green-600 hover:bg-green-600 cursor-default"
-                        : selectedPatient.status === "high"
-                        ? "bg-red-600 hover:bg-red-700"
-                        : "bg-accent-pulse hover:bg-[#196f4a]"
-                    }`}
-                  >
-                    {alertSent ? (
-                      <>
-                        <CheckCircle size={14} /> Alert Sent
-                      </>
-                    ) : (
-                      <>
-                        <Send size={14} /> Send Priority Alert to Ward
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
+                  <div className="mt-2 flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `SBAR report for ${selectedPatient.name}:\nS: ${selectedPatient.sbar.situation}\nB: ${selectedPatient.sbar.background}\nA: ${selectedPatient.sbar.assessment}\nR: ${selectedPatient.sbar.recommendation}`
+                        );
+                        toast.success("SBAR text copied to clipboard!", { className: "bg-slate-900 text-white border-white/10" });
+                      }}
+                      className="h-11 items-center justify-center rounded-full border border-white/10 bg-slate-800 px-6 text-xs font-semibold text-white hover:bg-slate-700 hover:border-white/20 transition-all hidden sm:inline-flex shadow-lg"
+                    >
+                      Copy SBAR Text
+                    </button>
+                    <button
+                      onClick={triggerAlert}
+                      disabled={alertSent}
+                      className={`h-11 inline-flex items-center gap-2 rounded-full px-6 text-xs font-bold text-slate-950 shadow-[0_0_20px_rgba(154,218,0,0.3)] transition-all ${
+                        alertSent
+                          ? "bg-emerald-500 hover:bg-emerald-500 cursor-default shadow-none text-white"
+                          : selectedPatient.status === "high"
+                          ? "bg-red-500 text-white hover:bg-red-400 shadow-[0_0_20px_rgba(239,68,68,0.4)]"
+                          : "bg-[#9ada00] hover:bg-[#aef500] hover:scale-105"
+                      }`}
+                    >
+                      {alertSent ? (
+                        <>
+                          <CheckCircle size={15} /> Alert Sent Successfully
+                        </>
+                      ) : (
+                        <>
+                          <Send size={15} /> Send Priority Alert to Ward
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>

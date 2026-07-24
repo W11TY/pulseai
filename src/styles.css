@@ -39,7 +39,9 @@
   --color-accent-data: var(--accent-data);
   --color-hairline: var(--hairline);
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Tight", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-[#9ada00]: #9ada00;
+  --font-serif: "Inter Tight", "Inter", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
@@ -50,24 +52,34 @@
   --bg-panel-raised: rgba(239, 241, 237, 0.85);
   --text-primary: #0E1210;
   --text-muted: #4a5250;
-  --accent-pulse: #1F8A5C;
-  --accent-pulse-bright: #5FD3A0;
-  --accent-data: #7FA98C;
+  --accent-pulse: #16a34a;
+  --accent-pulse-bright: #22c55e;
+  --accent-data: #4ade80;
   --hairline: rgba(180, 184, 178, 0.5);
-  --accent-gradient: linear-gradient(90deg, #1F8A5C 0%, #5FD3A0 100%);
+  --accent-gradient: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
   --shadow-card: 0 1px 2px rgba(14, 18, 16, 0.06), 0 8px 24px rgba(14, 18, 16, 0.08);
   --shadow-card-hover: 0 2px 4px rgba(14, 18, 16, 0.08), 0 12px 32px rgba(14, 18, 16, 0.12);
 }
+
+/* Hide default cursor globally to let custom cursor shine */
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
 
 
 @layer base {
   * {
     border-color: var(--hairline);
   }
+
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
   body {
     background-color: var(--bg-base);
     color: var(--text-primary);
@@ -75,7 +87,11 @@
     font-feature-settings: "ss01", "cv11";
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
-  h1, h2, h3, h4 {
+
+  h1,
+  h2,
+  h3,
+  h4 {
     letter-spacing: -0.02em;
   }
 }
@@ -122,12 +138,21 @@
 }
 
 @keyframes draw-line {
-  to { stroke-dashoffset: 0; }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @utility animate-fade-up {
@@ -135,7 +160,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

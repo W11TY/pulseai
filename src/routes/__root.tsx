@@ -7,12 +7,14 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteNav } from "../components/site-nav";
 import { SiteFooter } from "../components/site-footer";
+import { VideoScrollBackground } from "../components/video-scroll-background";
+import { CustomCursor } from "../components/custom-cursor";
 
 function NotFoundComponent() {
   return (
@@ -91,7 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300..900;1,300..900&family=Inter:ital,wght@0,300..900;1,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -102,14 +104,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-[#eaeaea] text-[#141617]">
       <head>
         <HeadContent />
-        {/* Built & designed by Akshat Tiwari — https://www.linkedin.com/in/akshat-tiwari-5279a524b/ */}
         <meta name="author" content="Akshat Tiwari" />
         <meta name="designer" content="Akshat Tiwari — linkedin.com/in/akshat-tiwari-5279a524b" />
       </head>
-      <body>
+      <body className="bg-[#eaeaea] text-[#141617]">
         {children}
         <Scripts />
       </body>
@@ -120,38 +121,16 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
-
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col text-text-primary transition-colors duration-300 relative">
-        {/* Full-page DNA video background */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          aria-hidden="true"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            zIndex: 0,
-            pointerEvents: "none",
-            opacity: 0.45,
-          }}
-          src={`${import.meta.env.BASE_URL}dnabg.mov`}
-        />
-        {/* Content Layer */}
-        <div className="relative z-10 flex flex-col min-h-screen">
-          <SiteNav />
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          <SiteFooter />
-        </div>
+      <div className="flex min-h-screen flex-col bg-[#eaeaea] text-[#141617] selection:bg-[#32373c] selection:text-white relative pb-28">
+        <CustomCursor />
+        <VideoScrollBackground src="flowingblob.mp4" mode="scroll" className="fixed inset-0 pointer-events-none z-0 opacity-85" />
+        <SiteNav />
+        <main className="flex-1 relative z-10">
+          <Outlet />
+        </main>
+        <SiteFooter />
       </div>
     </QueryClientProvider>
   );
