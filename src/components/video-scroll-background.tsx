@@ -156,7 +156,7 @@ export function VideoScrollBackground({
         playsInline
         autoPlay
         preload="auto"
-        className="w-full max-w-[340px] sm:max-w-sm aspect-[9/16] md:aspect-auto md:max-w-none md:w-full md:h-full object-cover rounded-3xl md:rounded-none block pointer-events-none mx-auto"
+        className="w-full h-full object-cover block pointer-events-none"
       />
     </div>
   );
