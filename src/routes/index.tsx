@@ -277,41 +277,43 @@ function HomePage() {
             <Reveal>
               <Dialog>
                 <DialogTrigger asChild>
-                  <div className="group relative w-full h-[400px] sm:h-[500px] rounded-3xl overflow-hidden cursor-pointer shadow-xl border border-slate-200/80 hover:shadow-2xl hover:border-slate-300 transition-all duration-500">
-                    {/* Background Visual */}
-                    <div className="absolute inset-0 bg-slate-900 group-hover:scale-105 transition-transform duration-700">
-                      <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay"></div>
-                      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-[#16a34a]/40"></div>
-                      
-                      {/* Grid overlay for tech feel */}
-                      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="absolute inset-0 p-8 sm:p-12 flex flex-col items-center justify-center text-center">
-                      <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 border border-white/20 group-hover:scale-110 transition-transform duration-500 shadow-lg">
-                        <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
+                  <div className="relative group mx-auto max-w-5xl cursor-pointer">
+                    <div className="group relative w-full h-[60vw] max-h-[350px] sm:max-h-none sm:h-[500px] rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 hover:shadow-2xl hover:border-slate-300 transition-all duration-500">
+                      {/* Background Visual */}
+                      <div className="absolute inset-0 bg-slate-900 group-hover:scale-105 transition-transform duration-700">
+                        <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-[#16a34a]/40"></div>
+                        
+                        {/* Grid overlay for tech feel */}
+                        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
                       </div>
-                      <h3 className="text-2xl sm:text-4xl font-sans font-medium text-white mb-4 tracking-tight">
-                        Launch Ward Simulator
-                      </h3>
-                      <p className="text-slate-300 max-w-md mx-auto text-sm sm:text-base font-normal mb-8">
-                        Experience real-time AI deliberation on multi-modal patient vitals and telemetry streams.
-                      </p>
-                      
-                      <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#9ada00] text-slate-900 font-semibold text-sm hover:bg-[#a6ec00] transition-colors shadow-lg">
-                        Open Live Interface
-                        <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
+
+                      {/* Content */}
+                      <div className="absolute inset-0 p-8 sm:p-12 flex flex-col items-center justify-center text-center">
+                        <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 border border-white/20 group-hover:scale-110 transition-transform duration-500 shadow-lg">
+                          <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-2xl sm:text-4xl font-sans font-medium text-white mb-4 tracking-tight">
+                          Launch Ward Simulator
+                        </h3>
+                        <p className="text-slate-300 max-w-md mx-auto text-sm sm:text-base font-normal mb-8">
+                          Experience real-time AI deliberation on multi-modal patient vitals and telemetry streams.
+                        </p>
+                        
+                        <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#9ada00] text-slate-900 font-semibold text-sm hover:bg-[#a6ec00] transition-colors shadow-lg">
+                          Open Live Interface
+                          <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </DialogTrigger>
                 
-                <DialogContent className="max-w-[95vw] sm:max-w-[1200px] w-full p-0 border-0 bg-transparent shadow-2xl h-[90vh] flex flex-col overflow-hidden rounded-3xl">
+                <DialogContent className="max-w-[95vw] sm:max-w-[1200px] w-full p-0 border-0 bg-transparent shadow-2xl h-[90dvh] sm:h-[90vh] flex flex-col overflow-hidden rounded-3xl">
                   <div className="flex-1 bg-white h-full overflow-y-auto">
                     <PulseDashboardDemo />
                   </div>
@@ -385,7 +387,7 @@ function HomePage() {
                   <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-[#111112] text-white mb-6">
                     get in touch
                   </span>
-                  <TextStaggerReveal as="h2" text="Let’s Predict Together." className="font-sans text-4xl sm:text-6xl font-medium tracking-tight text-[#111112] leading-[0.98] mb-6 max-w-[200px] sm:max-w-[300px]" staggerDelay={0.06} />
+                  <TextStaggerReveal as="h2" text="Let’s Predict Together." className="font-sans text-4xl sm:text-6xl font-medium tracking-tight text-[#111112] leading-[0.98] mb-6 max-w-[80vw] sm:max-w-[300px] text-center" staggerDelay={0.06} />
                   <p className="text-base sm:text-lg text-[#475569] leading-relaxed font-normal mb-8">
                     Interested in deploying clinical pilots, research collaborations, or data integration with Pulse AI? Get in touch with our founding clinical team.
                   </p>

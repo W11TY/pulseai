@@ -54,7 +54,7 @@ export function TestimonialsCarousel() {
           {testimonials.map((t, idx) => (
             <motion.div 
               key={idx} 
-              className="min-w-[320px] sm:min-w-[450px] bg-white border border-slate-200/80 rounded-3xl p-8 sm:p-10 shadow-lg shadow-black/5 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between"
+              className="min-w-[85vw] sm:min-w-[450px] bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-10 shadow-lg shadow-black/5 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between"
               whileHover={{ y: -5 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
